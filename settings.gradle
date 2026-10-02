@@ -1,0 +1,3 @@
+rootProject.name = 'photo-platform-backend'
+
+include 'photo-service'
