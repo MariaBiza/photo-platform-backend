@@ -26,13 +26,11 @@ public class PhotoRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
     public List<Photo> getAllPhotos(){
-        log.info("START getAllPhotos");
         String sql = "SELECT * FROM photo";
         return jdbcTemplate.query(sql, PHOTO_ROW_MAPPER);
     }
 
     public Photo getPhotoById(Long id) {
-        log.info("START getPhotoById");
         return jdbcTemplate.queryForObject("SELECT * FROM photo WHERE id=?", PHOTO_ROW_MAPPER, id);
     }
 
@@ -41,5 +39,11 @@ public class PhotoRepository {
         String sql = "INSERT INTO photo (name, height, width, photo) " +
                 "VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql, name, height, width, photoBytes);
+    }
+
+    public boolean deletePhoto(Long id) {
+        String sql = "DELETE FROM photo WHERE id=?";
+        int rows = jdbcTemplate.update(sql, id);
+        return rows > 0;
     }
 }

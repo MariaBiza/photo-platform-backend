@@ -41,4 +41,8 @@ public class PhotoService {
     public Photo getPhotoById(Long id) {
         return photoRepository.getPhotoById(id);
     }
+
+    public boolean deletePhoto(Long id) {
+        return photoRepository.deletePhoto(id);
+    }
 }
