@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Home page</title>
+    <script th:src="@{/home.js}" defer></script>
 </head>
 <body>
     <h1 th:style="'color:' + ${color}">Welcome</h1>
+    <button id="addPhoto" >Add photo</button>
+    <button id="deletePhoto">Delete photo</button>
 </body>
 </html>

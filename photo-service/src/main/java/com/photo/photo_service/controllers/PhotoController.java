@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -41,9 +42,14 @@ public class PhotoController {
 
     @GetMapping("/home")
     public String home(Model model) {
-        photoService.createTestPhoto();
         model.addAttribute("color", "green");
         return "home.html";
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Void> addPhoto() {
+        photoService.createTestPhoto();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/photo/{id}")
