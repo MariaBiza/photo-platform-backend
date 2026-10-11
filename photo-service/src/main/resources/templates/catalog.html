@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Photos</title>
+    <script th:src="@{/catalog.js}" defer></script>
+</head>
+<body>
+    <h1>Catalog</h1>
+    <table>
+        <tr>
+            <th>Photo</th>
+            <th>Name</th>
+        </tr>
+        <tr th:each="photo : ${photos}">
+            <td>
+                <img th:src="${photo.base64Photo}"
+                     alt="Photo"
+                     style="width: 100px; height: 100px; object-fit: cover" />
+            </td>
+            <td th:text="${photo.name}">Name</td>
+        </tr>
+    </table>
+    <button id="deletePhoto" data-id="4">Delete photo(s)</button>
+</body>
+</html>

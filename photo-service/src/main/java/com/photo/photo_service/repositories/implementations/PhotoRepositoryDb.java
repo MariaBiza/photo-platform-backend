@@ -1,6 +1,10 @@
-package com.photo.photo_service.repositories;
+package com.photo.photo_service.repositories.implementations;
 
+import com.photo.photo_service.mapper.PhotoMapper;
 import com.photo.photo_service.models.Photo;
+import com.photo.photo_service.models.PhotoDTO;
+import com.photo.photo_service.repositories.interfaces.PhotoRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,8 +14,11 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class PhotoRepository {
+@RequiredArgsConstructor
+public class PhotoRepositoryDb implements PhotoRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final PhotoMapper photoMapper;
+
     private static final RowMapper<Photo> PHOTO_ROW_MAPPER = (r, i) -> {
         Photo p = new Photo();
         p.setId(r.getLong("id"));
@@ -22,9 +29,6 @@ public class PhotoRepository {
         return p;
     };
 
-    public PhotoRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
     public List<Photo> getAllPhotos(){
         String sql = "SELECT * FROM photo";
         return jdbcTemplate.query(sql, PHOTO_ROW_MAPPER);
@@ -34,11 +38,16 @@ public class PhotoRepository {
         return jdbcTemplate.queryForObject("SELECT * FROM photo WHERE id=?", PHOTO_ROW_MAPPER, id);
     }
 
-    public void insertPhoto(String name, double height, double width, byte[] photoBytes) {
+    public void insertPhoto(PhotoDTO photoDTO) {
+        Photo photo = photoMapper.toEntity(photoDTO);
         log.info("START insertPhoto");
         String sql = "INSERT INTO photo (name, height, width, photo) " +
                 "VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, name, height, width, photoBytes);
+        jdbcTemplate.update(sql,
+                photo.getName(),
+                photo.getHeight(),
+                photo.getWidth(),
+                photo.getPhoto());
     }
 
     public boolean deletePhoto(Long id) {

@@ -1,23 +1,11 @@
 const addPhotoButton = document.getElementById("addPhoto");
-const deletePhotoButton = document.getElementById("deletePhoto");
+const catalog = document.getElementById("catalog");
 
 addPhotoButton.addEventListener('click', function() {
-    alert('The addPhotoButton is pressed');
+    if (!confirm('Add photo?')) return;
+
     fetch("http://localhost:8080/add", {
         method: "POST"
-    })
-    .then(response => response.text())
-    .then(data => console.log(data))
-    .catch(error => console.log("Error: ", error));
-});
-
-deletePhotoButton.addEventListener('click', function() {
-    const photoId = this.dataset.id;
-
-    if (!confirm('Delete photo?')) return;
-
-    fetch(`http://localhost:8080/photo/${photoId}`, {
-        method: "DELETE"
     })
     .then(response => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -25,4 +13,17 @@ deletePhotoButton.addEventListener('click', function() {
     })
     .then(data => console.log(data))
     .catch(error => console.log("Error: ", error));
+});
+
+catalog.addEventListener('click', function() {
+//    fetch("http://localhost:8080/all", {
+//        method: "GET"
+//    })
+//    .then(response => {
+//        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+//        return response.text();
+//    })
+//    .then(data => console.log(data))
+//    .catch(error => console.log("Error: ", error));
+    window.location.assign("/catalog");
 });

@@ -1,9 +1,8 @@
 package com.photo.photo_service.controllers;
 
-import com.photo.photo_service.models.Photo;
 import com.photo.photo_service.models.PhotoDTO;
-import com.photo.photo_service.services.PhotoService;
-import org.springframework.http.MediaType;
+import com.photo.photo_service.services.interfaces.PhotoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,29 +14,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class PhotoController {
     private final PhotoService photoService;
 
-    public PhotoController(PhotoService photoService) {
-        this.photoService = photoService;
-    }
-
     @GetMapping("/all")
-    public ResponseEntity<List<PhotoDTO>> getAllPhotos() {
-        List<PhotoDTO> dtos = photoService.getAllPhotos().stream()
-                .map(p -> new PhotoDTO(p.getId(), p.getName(), p.getHeight(), p.getWidth()))
-                .toList();
-        return ResponseEntity.ok(dtos);
+    public ResponseEntity<List<String>> getAllPhotos() {
+        return ResponseEntity.ok(photoService.getAllPhotos().stream().map(PhotoDTO::name).toList());
     }
 
-    @GetMapping(value = "/photo/{id}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getPhotoById(
-            @PathVariable("id") Long id) {
-        Photo photo = photoService.getPhotoById(id);
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.IMAGE_PNG)
-                .body(photo.getPhoto());
+    @GetMapping(value = "/photo/{id}")
+    public String getPhotoById(
+            @PathVariable("id") Long id,
+            Model model) {
+        PhotoDTO photo = photoService.getPhotoById(id);
+        model.addAttribute("photo", photo.base64Photo());
+        return "one_photo.html";
     }
 
     @GetMapping("/home")
@@ -58,5 +50,12 @@ public class PhotoController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("catalog")
+    public String catalog(Model model) {
+        List<PhotoDTO> photos = photoService.getAllPhotos();
+        model.addAttribute("photos", photos);
+        return "catalog.html";
     }
 }
